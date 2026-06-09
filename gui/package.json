@@ -1,0 +1,29 @@
+{
+  "name": "ccpm-gui",
+  "version": "0.1.0",
+  "description": "CCPM Kanban Dashboard with Agent Monitoring",
+  "type": "module",
+  "bin": {
+    "ccpm-gui": "./bin/cli.js"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@octokit/rest": "^21.0.0",
+    "marked": "^15.0.0",
+    "sirv": "^3.0.0",
+    "opener": "^1.5.2",
+    "svelte-dnd-action": "^0.9.0",
+    "svelte-spa-router": "^4.0.1"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^5.0.0",
+    "svelte": "^5.0.0",
+    "vite": "^6.0.0",
+    "typescript": "^5.5.0",
+    "@tsconfig/svelte": "^5.0.0"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "debug.javascript.defaultRuntimeExecutable": {
+    "pwa-chrome": "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser",
+    "chrome": "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser"
+  }
+}

@@ -98,6 +98,10 @@
     <Board
       columns={buildColumns($epics)}
       onDrop={(id, status) => handleDrop(id, status)}
+      onCardClick={(item) => {
+        const epic = item as Epic;
+        window.location.hash = `/tasks/${epic.epicName || epic.id}`;
+      }}
     />
   {/if}
 

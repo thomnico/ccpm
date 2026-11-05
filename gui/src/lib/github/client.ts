@@ -201,6 +201,15 @@ export class GitHubClient {
     });
   }
 
+  async createComment(issueNumber: number, body: string): Promise<void> {
+    await this.octokit.issues.createComment({
+      owner: this.owner,
+      repo: this.repo,
+      issue_number: issueNumber,
+      body,
+    });
+  }
+
   async validateToken(): Promise<boolean> {
     try {
       await this.octokit.users.getAuthenticated();

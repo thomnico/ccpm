@@ -88,6 +88,7 @@
     <Board
       columns={buildColumns($prds)}
       onDrop={(id, status) => handleDrop(id, status)}
+      onCardClick={(item) => selectedPrd = item as PRD}
     />
   {/if}
 

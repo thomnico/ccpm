@@ -1,10 +1,11 @@
 <script lang="ts">
-  import type { BoardColumn, ItemStatus } from '$lib/ccpm/types';
+  import type { BoardColumn, ItemStatus, PRD, Epic, Task } from '$lib/ccpm/types';
   import Column from './Column.svelte';
 
-  let { columns, onDrop }: {
+  let { columns, onDrop, onCardClick }: {
     columns: BoardColumn[];
     onDrop: (itemId: number, newStatus: ItemStatus) => void;
+    onCardClick?: (item: PRD | Epic | Task) => void;
   } = $props();
 </script>
 
@@ -15,6 +16,7 @@
       items={col.items}
       status={col.status}
       {onDrop}
+      {onCardClick}
     />
   {/each}
 </div>

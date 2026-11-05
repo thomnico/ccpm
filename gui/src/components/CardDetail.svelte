@@ -1,13 +1,17 @@
 <script lang="ts">
-  import type { PRD, Epic, Task } from '$lib/ccpm/types';
+  import type { PRD, Epic, Task, ADR } from '$lib/ccpm/types';
   import { marked } from 'marked';
+  import { getClient } from '$lib/stores/client-helper';
 
   let { item, onclose }: {
-    item: PRD | Epic | Task;
+    item: PRD | Epic | Task | ADR;
     onclose: () => void;
   } = $props();
 
   let renderedBody = $derived(item.body ? marked.parse(item.body) as string : '');
+  let commentText = $state('');
+  let submitting = $state(false);
+  let commentError = $state('');
 
   function handleBackdropClick(e: MouseEvent) {
     if ((e.target as HTMLElement).classList.contains('detail-overlay')) {
@@ -17,6 +21,23 @@
 
   function handleKeydown(e: KeyboardEvent) {
     if (e.key === 'Escape') onclose();
+  }
+
+  async function submitComment() {
+    if (!commentText.trim()) return;
+    const client = getClient();
+    if (!client) return;
+    submitting = true;
+    commentError = '';
+    try {
+      await client.createComment(item.id, commentText.trim());
+      commentText = '';
+    } catch (err) {
+      commentError = 'Failed to post comment.';
+      console.error(err);
+    } finally {
+      submitting = false;
+    }
   }
 </script>
 
@@ -51,6 +72,26 @@
     <a class="gh-link" href={item.htmlUrl} target="_blank" rel="noopener noreferrer">
       View on GitHub
     </a>
+
+    <div class="comment-section">
+      <h3 class="comment-heading">Add comment</h3>
+      <textarea
+        class="comment-input"
+        bind:value={commentText}
+        placeholder="Leave a comment..."
+        rows="4"
+      ></textarea>
+      {#if commentError}
+        <div class="comment-error">{commentError}</div>
+      {/if}
+      <button
+        class="btn-comment"
+        onclick={submitComment}
+        disabled={submitting || !commentText.trim()}
+      >
+        {submitting ? 'Posting…' : 'Comment'}
+      </button>
+    </div>
   </div>
 </div>
 
@@ -182,5 +223,64 @@
 
   .gh-link:hover {
     text-decoration: underline;
+  }
+
+  .comment-section {
+    border-top: 1px solid var(--border);
+    padding-top: 16px;
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .comment-heading {
+    margin: 0;
+    font-size: 14px;
+    color: var(--text);
+  }
+
+  .comment-input {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 13px;
+    padding: 8px 10px;
+    resize: vertical;
+    box-sizing: border-box;
+  }
+
+  .comment-input:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+
+  .comment-error {
+    font-size: 12px;
+    color: var(--red, #ef4444);
+  }
+
+  .btn-comment {
+    align-self: flex-end;
+    padding: 7px 16px;
+    background: var(--accent);
+    color: var(--bg);
+    border: none;
+    border-radius: var(--radius);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .btn-comment:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .btn-comment:not(:disabled):hover {
+    background: var(--accent-hover);
   }
 </style>
